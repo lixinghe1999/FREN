@@ -50,9 +50,9 @@ def extra_args(parser):
 args, conf = util.args.parse_args(extra_args, training=True, default_ray_batch_size=128)
 device = util.get_cuda(args.gpu_id[0])
 dset, val_dset, _ = get_split_dataset(args.dataset_format, args.datadir)
-print(
-    "dset z_near {}, z_far {}, lindisp {}".format(dset.z_near, dset.z_far, dset.lindisp)
-)
+# print(
+#     "dset z_near {}, z_far {}, lindisp {}".format(dset.z_near, dset.z_far, dset.lindisp)
+# )
 
 net = make_model(conf["model"]).to(device=device)
 net.stop_encoder_grad = args.freeze_enc
@@ -111,13 +111,11 @@ class PixelNeRFTrainer(trainlib.Trainer):
         if "images" not in data:
             return {}
         all_images = data["images"].to(device=device)  # (SB, NV, 3, H, W)
-
         SB, NV, _, H, W = all_images.shape
         all_poses = data["poses"].to(device=device)  # (SB, NV, 4, 4)
         all_bboxes = data.get("bbox")  # (SB, NV, 4)  cmin rmin cmax rmax
         all_focals = data["focal"]  # (SB)
         all_c = data.get("c")  # (SB)
-
         if self.use_bbox and global_step >= args.no_bbox_step:
             self.use_bbox = False
             print(">>> Stopped using bbox sampling @ iter", global_step)
@@ -127,7 +125,6 @@ class PixelNeRFTrainer(trainlib.Trainer):
 
         all_rgb_gt = []
         all_rays = []
-
         curr_nviews = nviews[torch.randint(0, len(nviews), ()).item()]
         if curr_nviews == 1:
             image_ord = torch.randint(0, NV, (SB, 1))
@@ -170,7 +167,6 @@ class PixelNeRFTrainer(trainlib.Trainer):
 
             all_rgb_gt.append(rgb_gt)
             all_rays.append(rays)
-
         all_rgb_gt = torch.stack(all_rgb_gt)  # (SB, ray_batch_size, 3)
         all_rays = torch.stack(all_rays)  # (SB, ray_batch_size, 8)
 
@@ -188,7 +184,6 @@ class PixelNeRFTrainer(trainlib.Trainer):
             all_focals.to(device=device),
             c=all_c.to(device=device) if all_c is not None else None,
         )
-
         render_dict = DotMap(render_par(all_rays, want_weights=True,))
         coarse = render_dict.coarse
         fine = render_dict.fine

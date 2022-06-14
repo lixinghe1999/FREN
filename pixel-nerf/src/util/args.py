@@ -111,10 +111,10 @@ def parse_args(
 
     args.gpu_id = list(map(int, args.gpu_id.split()))
 
-    print("EXPERIMENT NAME:", args.name)
-    if training:
-        print("CONTINUE?", "yes" if args.resume else "no")
-    print("* Config file:", args.conf)
-    print("* Dataset format:", args.dataset_format)
-    print("* Dataset location:", args.datadir)
+    # print("EXPERIMENT NAME:", args.name)
+    # if training:
+    #     print("CONTINUE?", "yes" if args.resume else "no")
+    # print("* Config file:", args.conf)
+    # print("* Dataset format:", args.dataset_format)
+    # print("* Dataset location:", args.datadir)
     return args, conf

@@ -24,7 +24,7 @@ class SRNDataset(torch.utils.data.Dataset):
         self.base_path = path + "_" + stage
         self.dataset_name = os.path.basename(path)
 
-        print("Loading SRN dataset", self.base_path, "name:", self.dataset_name)
+        # print("Loading SRN dataset", self.base_path, "name:", self.dataset_name)
         self.stage = stage
         assert os.path.exists(self.base_path)
 
