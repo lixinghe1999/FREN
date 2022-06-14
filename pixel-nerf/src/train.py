@@ -112,6 +112,7 @@ class PixelNeRFTrainer(trainlib.Trainer):
             return {}
         all_images = data["images"].to(device=device)  # (SB, NV, 3, H, W)
         SB, NV, _, H, W = all_images.shape
+        print(SB, NV, H, W)
         all_poses = data["poses"].to(device=device)  # (SB, NV, 4, 4)
         all_bboxes = data.get("bbox")  # (SB, NV, 4)  cmin rmin cmax rmax
         all_focals = data["focal"]  # (SB)
@@ -174,6 +175,7 @@ class PixelNeRFTrainer(trainlib.Trainer):
         src_images = util.batched_index_select_nd(
             all_images, image_ord
         )  # (SB, NS, 3, H, W)
+        print(src_images.shape)
         src_poses = util.batched_index_select_nd(all_poses, image_ord)  # (SB, NS, 4, 4)
 
         all_bboxes = all_poses = all_images = None
@@ -187,6 +189,7 @@ class PixelNeRFTrainer(trainlib.Trainer):
         render_dict = DotMap(render_par(all_rays, want_weights=True,))
         coarse = render_dict.coarse
         fine = render_dict.fine
+        print(all_rgb_gt.shape)
         using_fine = len(fine) > 0
 
         loss_dict = {}
