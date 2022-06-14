@@ -169,73 +169,73 @@ class Trainer:
                             " lr",
                             self.optim.param_groups[0]["lr"],
                         )
-        #             if batch % self.eval_interval == 0:
-        #                 test_data = next(test_data_iter)
-        #                 self.net.eval()
-        #                 with torch.no_grad():
-        #                     test_losses = self.eval_step(test_data, global_step=step_id)
-        #                 self.net.train()
-        #                 test_loss_str = fmt_loss_str(test_losses)
-        #                 self.writer.add_scalars("train", losses, global_step=step_id)
-        #                 self.writer.add_scalars(
-        #                     "test", test_losses, global_step=step_id
-        #                 )
-        #                 print("*** Eval:", "E", epoch, "B", batch, test_loss_str, " lr")
-        #
-        #             if batch % self.save_interval == 0 and (epoch > 0 or batch > 0):
-        #                 print("saving")
-        #                 if self.managed_weight_saving:
-        #                     self.net.save_weights(self.args)
-        #                 else:
-        #                     torch.save(
-        #                         self.net.state_dict(), self.default_net_state_path
-        #                     )
-        #                 torch.save(self.optim.state_dict(), self.optim_state_path)
-        #                 if self.lr_scheduler is not None:
-        #                     torch.save(
-        #                         self.lr_scheduler.state_dict(), self.lrsched_state_path
-        #                     )
-        #                 torch.save({"iter": step_id + 1}, self.iter_state_path)
-        #                 self.extra_save_state()
-        #
-        #             if batch % self.vis_interval == 0:
-        #                 print("generating visualization")
-        #                 if self.fixed_test:
-        #                     test_data = next(iter(self.test_data_loader))
-        #                 else:
-        #                     test_data = next(test_data_iter)
-        #                 self.net.eval()
-        #                 with torch.no_grad():
-        #                     vis, vis_vals = self.vis_step(
-        #                         test_data, global_step=step_id
-        #                     )
-        #                 if vis_vals is not None:
-        #                     self.writer.add_scalars(
-        #                         "vis", vis_vals, global_step=step_id
-        #                     )
-        #                 self.net.train()
-        #                 if vis is not None:
-        #                     import imageio
-        #
-        #                     vis_u8 = (vis * 255).astype(np.uint8)
-        #                     imageio.imwrite(
-        #                         os.path.join(
-        #                             self.visual_path,
-        #                             "{:04}_{:04}_vis.png".format(epoch, batch),
-        #                         ),
-        #                         vis_u8,
-        #                     )
-        #
-        #             if (
-        #                 batch == self.num_total_batches - 1
-        #                 or batch % self.accu_grad == self.accu_grad - 1
-        #             ):
-        #                 self.optim.step()
-        #                 self.optim.zero_grad()
-        #
-        #             self.post_batch(epoch, batch)
-        #             step_id += 1
-        #             batch += 1
-        #             progress.update(1)
-        #     if self.lr_scheduler is not None:
-        #         self.lr_scheduler.step()
+                    if batch % self.eval_interval == 0:
+                        test_data = next(test_data_iter)
+                        self.net.eval()
+                        with torch.no_grad():
+                            test_losses = self.eval_step(test_data, global_step=step_id)
+                        self.net.train()
+                        test_loss_str = fmt_loss_str(test_losses)
+                        self.writer.add_scalars("train", losses, global_step=step_id)
+                        self.writer.add_scalars(
+                            "test", test_losses, global_step=step_id
+                        )
+                        print("*** Eval:", "E", epoch, "B", batch, test_loss_str, " lr")
+
+                    if batch % self.save_interval == 0 and (epoch > 0 or batch > 0):
+                        print("saving")
+                        if self.managed_weight_saving:
+                            self.net.save_weights(self.args)
+                        else:
+                            torch.save(
+                                self.net.state_dict(), self.default_net_state_path
+                            )
+                        torch.save(self.optim.state_dict(), self.optim_state_path)
+                        if self.lr_scheduler is not None:
+                            torch.save(
+                                self.lr_scheduler.state_dict(), self.lrsched_state_path
+                            )
+                        torch.save({"iter": step_id + 1}, self.iter_state_path)
+                        self.extra_save_state()
+
+                    if batch % self.vis_interval == 0:
+                        print("generating visualization")
+                        if self.fixed_test:
+                            test_data = next(iter(self.test_data_loader))
+                        else:
+                            test_data = next(test_data_iter)
+                        self.net.eval()
+                        with torch.no_grad():
+                            vis, vis_vals = self.vis_step(
+                                test_data, global_step=step_id
+                            )
+                        if vis_vals is not None:
+                            self.writer.add_scalars(
+                                "vis", vis_vals, global_step=step_id
+                            )
+                        self.net.train()
+                        if vis is not None:
+                            import imageio
+
+                            vis_u8 = (vis * 255).astype(np.uint8)
+                            imageio.imwrite(
+                                os.path.join(
+                                    self.visual_path,
+                                    "{:04}_{:04}_vis.png".format(epoch, batch),
+                                ),
+                                vis_u8,
+                            )
+
+                    if (
+                        batch == self.num_total_batches - 1
+                        or batch % self.accu_grad == self.accu_grad - 1
+                    ):
+                        self.optim.step()
+                        self.optim.zero_grad()
+
+                    self.post_batch(epoch, batch)
+                    step_id += 1
+                    batch += 1
+                    progress.update(1)
+            if self.lr_scheduler is not None:
+                self.lr_scheduler.step()
